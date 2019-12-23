@@ -14,7 +14,7 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $adminRole = UserRole::where('name', 'admin')->first();
-        
+
         DB::table('users')->insert([
             'name' => 'admin',
             'email' => 'admin@admin.com',
