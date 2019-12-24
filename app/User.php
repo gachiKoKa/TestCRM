@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * Class User
  * @property HasOne|UserRole|null $role
  * @property int $id
+ * @property string password
  * @package App
  */
 class User extends Authenticatable

@@ -10,7 +10,7 @@ export default {
       state[names.state.user][names.state.name] = data.name
     }
     if (PropChecker.has(data, 'id')) {
-      state[names.state.user][names.state.name] = data.id
+      state[names.state.user][names.state.id] = data.id
     }
     if (PropChecker.has(data, 'role_id')) {
       state[names.state.user][names.state.roleId] = data.role_id

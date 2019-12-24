@@ -6,6 +6,7 @@ use App\Repositories\UserRepository;
 use App\Services\ApiResponseCreator;
 use App\Services\RolesChecker;
 use App\Services\RolesKeeper;
+use App\Services\Validation\SignInUserValidator;
 use App\Services\Validation\StoreUserValidator;
 use App\Structures\CreatedUserResponse;
 use App\User;
@@ -29,13 +30,18 @@ class RegisterAndAuthController extends Controller
     /**@var RolesKeeper */
     private $rolesKeeper;
 
+    /** @var SignInUserValidator */
+    private $signInUserValidator;
+
     public function __construct(
         StoreUserValidator $storeUserValidator,
+        SignInUserValidator $signInUserValidator,
         UserRepository $userRepository,
         RolesChecker $rolesChecker,
         RolesKeeper $rolesKeeper
     ) {
         $this->storeUserValidator = $storeUserValidator;
+        $this->signInUserValidator = $signInUserValidator;
         $this->userRepository = $userRepository;
         $this->rolesChecker = $rolesChecker;
         $this->rolesKeeper = $rolesKeeper;
@@ -61,4 +67,26 @@ class RegisterAndAuthController extends Controller
         return ApiResponseCreator::responseOk(new CreatedUserResponse($newUser));
     }
 
+    /**
+     * @return JsonResponse
+     */
+    public function signInUser(): JsonResponse
+    {
+        try {
+            $userData = $this->signInUserValidator->validate();
+        } catch (ValidationException $e) {
+            return ApiResponseCreator::responseError('Invalid credentials', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        /** @var User $user */
+        $user = $this->userRepository->findByEmail($userData['email']);
+
+        if (!Hash::check($userData['password'], $user->password)) {
+            return ApiResponseCreator::responseError('Incorrect password', Response::HTTP_BAD_REQUEST);
+        }
+        
+        $isAdminUser = $this->rolesChecker->isAdmin($user->id);
+
+        return ApiResponseCreator::responseOk(new CreatedUserResponse($user, $isAdminUser, !$isAdminUser));
+    }
 }

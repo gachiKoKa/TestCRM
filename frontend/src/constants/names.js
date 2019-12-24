@@ -1,6 +1,7 @@
 export default {
   actions: {
-    registerUser: 'REGISTER_USER'
+    registerUser: 'REGISTER_USER',
+    signInUser: 'SIGN_IN_USER'
   },
   getters: {
   },
@@ -9,7 +10,9 @@ export default {
     registerUserName: 'REGISTER_USER_NAME',
     registerUserPassword: 'REGISTER_USER_PASSWORD',
     registerUserPasswordConfirmation: 'REGISTER_USER_PASSWORD_CONFIRMATION',
-    setUserToGlobalState: 'SET_USER_TO_GLOBAL_STATE'
+    setUserToGlobalState: 'SET_USER_TO_GLOBAL_STATE',
+    signInUserEmail: 'SIGN_IN_USER_EMAIL',
+    signInUserPassword: 'SIGN_IN_USER_PASSWORD'
   },
   state: {
     email: 'EMAIL',

@@ -24,4 +24,16 @@ class UserRepository extends AbstractRepository
     {
         return User::class;
     }
+
+    /**
+     * @param string $email
+     * @return User|null
+     */
+    public function findByEmail(string $email): ?User
+    {
+        /** @var User $user */
+        $user = $this->getBuilder()->where('email', $email)->first();
+
+        return $user;
+    }
 }

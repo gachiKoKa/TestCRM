@@ -4,21 +4,13 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-header">
-            Register
+            Sign In
           </div>
           <div class="card-body">
             <b-form
-              id="registrationForm"
-              title="Registration (as employee only)"
+              id="signInForm"
+              title="Sign In"
             >
-              <b-input-group
-                prepend="Name"
-              >
-                <b-form-input
-                  v-model="name"
-                  type="text"
-                />
-              </b-input-group>
               <b-input-group
                 prepend="Email"
                 class="mt-3"
@@ -37,30 +29,16 @@
                   type="password"
                 />
               </b-input-group>
-              <b-input-group
-                prepend="Confirm password"
-                class="mt-3"
-              >
-                <b-form-input
-                  v-model="password_confirm"
-                  type="password"
-                />
-              </b-input-group>
               <div class="row mb-0 form-group">
                 <div class="col-md-6 offset-md-4 mt-3">
                   <b-button
                     type="submit"
                     variant="outline-dark"
-                    @click.prevent="registerUser()"
+                    @click.prevent="signIn()"
                   >
-                    Register
+                    Sign In
                   </b-button>
                 </div>
-              </div>
-              <div>
-                <router-link :to="{name: 'sign-in-page'}">
-                  Have an account? Sign in!
-                </router-link>
               </div>
             </b-form>
           </div>
@@ -70,4 +48,4 @@
   </div>
 </template>
 
-<script src="./RegisterPage.js"></script>
+<script src="./SignInPage.js"></script>
