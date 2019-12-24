@@ -11,15 +11,3 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Auth::routes();
-
-Route::group(['prefix' => 'api', 'as' => 'api'], function () {
-    Route::post('register-user', 'RegisterAndAuthController@registerUser');
-    Route::get('get-abc','RegisterAndAuthController@getAbc');
-});
-
-Route::get('/home', 'HomeController@index')->name('home');

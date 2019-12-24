@@ -25,11 +25,11 @@ abstract class AbstractCustomValidator
     {
         $data = $this->request->all();
 
-        if (array_key_exists($data['_token'], $data)) {
+        if (array_key_exists('_token', $data)) {
             unset($data['_token']);
         }
 
-        if (array_key_exists($data['_method'], $data)) {
+        if (array_key_exists('_method', $data)) {
             unset($data['_method']);
         }
 

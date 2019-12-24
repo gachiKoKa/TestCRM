@@ -24,38 +24,4 @@ class UserRepository extends AbstractRepository
     {
         return User::class;
     }
-
-    /**
-     * @param $userId
-     * @return bool
-     */
-    public function isAdmin($userId): bool
-    {
-        $user = $this->find($userId);
-
-        if (is_null($user)) {
-            return false;
-        }
-
-        $adminRole = $this->rolesKeeper->getAdminRole();
-
-        return $user->id === $adminRole->id;
-    }
-
-    /**
-     * @param $userId
-     * @return bool
-     */
-    public function isEmployee($userId): bool
-    {
-        $user = $this->find($userId);
-
-        if (is_null($user)) {
-            return false;
-        }
-
-        $employeeRole = $this->rolesKeeper->getEmployeeRole();
-
-        return $user->id === $employeeRole->id;
-    }
 }
