@@ -8,6 +8,12 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * Class User
+ * @property HasOne|UserRole|null $role
+ * @property int $id
+ * @package App
+ */
 class User extends Authenticatable
 {
     use Notifiable;

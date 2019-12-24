@@ -8,7 +8,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-abstract class Repository
+abstract class AbstractRepository
 {
     /** @var Model */
     protected $model;

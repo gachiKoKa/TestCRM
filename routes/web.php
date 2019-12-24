@@ -12,3 +12,12 @@
 */
 
 
+
+Route::group(['prefix' => 'api', 'as' => 'api'], function () {
+    Route::post('register-user', 'RegisterAndAuthController@registerUser');
+    Route::get('get-abc','RegisterAndAuthController@getAbc');
+});
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
