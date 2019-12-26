@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Repositories\UserRepository;
+use App\Repositories\RoleRepository;
 use App\Services\ApiResponseCreator;
 use App\Services\RolesChecker;
 use App\Services\RolesKeeper;
+use App\Services\Validation\RegisterUserValidator;
 use App\Services\Validation\SignInUserValidator;
 use App\Services\Validation\StoreUserValidator;
 use App\Structures\CreatedUserResponse;
@@ -18,8 +20,6 @@ use Illuminate\Validation\ValidationException;
 
 class RegisterAndAuthController extends Controller
 {
-    /**@var StoreUserValidator */
-    private $storeUserValidator;
 
     /** @var UserRepository */
     private $userRepository;
@@ -33,27 +33,31 @@ class RegisterAndAuthController extends Controller
     /** @var SignInUserValidator */
     private $signInUserValidator;
 
+    /** @var array */
+    private $allRoles = [];
+
     public function __construct(
-        StoreUserValidator $storeUserValidator,
         SignInUserValidator $signInUserValidator,
         UserRepository $userRepository,
         RolesChecker $rolesChecker,
-        RolesKeeper $rolesKeeper
+        RolesKeeper $rolesKeeper,
+        RoleRepository $roleRepository
     ) {
-        $this->storeUserValidator = $storeUserValidator;
         $this->signInUserValidator = $signInUserValidator;
         $this->userRepository = $userRepository;
         $this->rolesChecker = $rolesChecker;
         $this->rolesKeeper = $rolesKeeper;
+        $this->allRoles = $roleRepository->all()->toArray();
     }
 
     /**
+     * @param RegisterUserValidator $registerUserValidator
      * @return JsonResponse
      */
-    public function registerUser(): JsonResponse
+    public function registerUser(RegisterUserValidator $registerUserValidator): JsonResponse
     {
         try {
-            $newUserData = $this->storeUserValidator->validate();
+            $newUserData = $registerUserValidator->validate();
         } catch (ValidationException $e) {
             return ApiResponseCreator::responseError('Registration issue', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -64,7 +68,7 @@ class RegisterAndAuthController extends Controller
         /** @var User $newUser */
         $newUser = $this->userRepository->create($newUserData);
 
-        return ApiResponseCreator::responseOk(new CreatedUserResponse($newUser));
+        return ApiResponseCreator::responseOk(new CreatedUserResponse($newUser, false, true, $this->allRoles));
     }
 
     /**
@@ -84,9 +88,12 @@ class RegisterAndAuthController extends Controller
         if (!Hash::check($userData['password'], $user->password)) {
             return ApiResponseCreator::responseError('Incorrect password', Response::HTTP_BAD_REQUEST);
         }
-        
+
         $isAdminUser = $this->rolesChecker->isAdmin($user->id);
 
-        return ApiResponseCreator::responseOk(new CreatedUserResponse($user, $isAdminUser, !$isAdminUser));
+        return ApiResponseCreator::responseOk(
+            new CreatedUserResponse($user, $isAdminUser, !$isAdminUser, $this->allRoles)
+        )
+            ;
     }
 }

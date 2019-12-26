@@ -4,15 +4,13 @@ namespace App\Services\Validation;
 
 class UpdateUserValidator extends AbstractCustomValidator
 {
-    /** @var int */
-    public $id = 0;
-
     /**
-     * @inheritDoc
+     * @return array
      */
     public function getRules(): array
     {
         return [
+            'id' => 'required|int|exists:users,id',
             'email' => 'string|email|unique:users,email,' . $this->id . '|max:255',
             'name' => 'string|max:255',
             'password'=> 'string|min:8|confirmed',

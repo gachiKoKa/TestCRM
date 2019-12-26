@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
-use App\Repositories\UserRoleRepository;
+use App\Repositories\RoleRepository;
 use App\UserRole;
 
 class RolesKeeper
 {
-    /** @var UserRoleRepository */
+    /** @var RoleRepository */
     private $userRoleRepository;
 
-    public function __construct(UserRoleRepository $userRoleRepository)
+    public function __construct(RoleRepository $userRoleRepository)
     {
         $this->userRoleRepository = $userRoleRepository;
     }

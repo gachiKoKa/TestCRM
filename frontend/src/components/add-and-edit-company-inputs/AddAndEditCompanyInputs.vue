@@ -1,0 +1,49 @@
+<template>
+  <div>
+    <b-input-group
+      prepend="Name"
+      class="mt-3"
+    >
+      <b-form-input
+        v-model="name"
+        type="text"
+      />
+    </b-input-group>
+    <b-input-group
+      prepend="Email"
+      class="mt-3"
+    >
+      <b-form-input
+        v-model="email"
+        type="email"
+      />
+    </b-input-group>
+    <b-input-group
+      prepend="Web Site"
+      class="mt-3"
+    >
+      <b-form-input
+        v-model="webSite"
+        type="text"
+      />
+    </b-input-group>
+    <b-form-group>
+      <input
+        ref="companyLogo"
+        type="file"
+        hidden="hidden"
+        @change="getFile($event)"
+      >
+    </b-form-group>
+    <b-img
+      thumbnail
+      fluid
+      class="ml-6"
+      type=""
+      :src="logoSrc ? logoSrc: defaultImage"
+      @click="trigger()"
+    />
+  </div>
+</template>
+
+<script src="./AddAndEditCompanyInputs.js"></script>

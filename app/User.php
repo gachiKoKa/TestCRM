@@ -55,10 +55,10 @@ class User extends Authenticatable
     }
 
     /**
-     * @return HasOne|UserRole|null
+     * @return BelongsTo|UserRole|null
      */
     public function role()
     {
-        return $this->hasOne(UserRole::class);
+        return $this->belongsTo(UserRole::class);
     }
 }

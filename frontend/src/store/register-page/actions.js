@@ -4,6 +4,7 @@ import UrlMaker from '../../services/UrlMaker'
 import endpoints from '../../constants/endpoints'
 import PropChecker from '../../services/PropChecker'
 import ErrorsAlert from '../../services/ErrorsAlert'
+import router from '../../router/router'
 
 export default {
   [names.actions.registerUser] ({ commit, state }) {
@@ -16,16 +17,19 @@ export default {
         password_confirmation: state[names.state.passwordConfirm]
       }).then((response) => {
         if (PropChecker.hasData(response)) {
-          commit(names.mutations.setUserToGlobalState, response.data)
+          commit(names.mutations.setUserToGlobalState, response.data.user)
+          commit(names.mutations.setRoleToUser, response.data)
+          commit(names.mutations.setAllRoles, response.data)
+          router.push({ name: 'data-table-page' })
         }
         resolve()
       }).catch((error) => {
+        console.log(error)
         if (error.response.status !== 422) {
-          ErrorsAlert.errorAlert(error.response.data)
           reject(error.response)
           return
         }
-
+        ErrorsAlert.errorAlert(error.response.data)
         resolve()
       })
     })

@@ -2,24 +2,29 @@ import names from '../../constants/names'
 import PropChecker from '../../services/PropChecker'
 
 export default {
-  [names.mutations.setUserToGlobalState] (state, data) {
-    if (PropChecker.has(data, 'email')) {
-      state[names.state.user][names.state.email] = data.email
+  [names.mutations.setUserToGlobalState] (state, dataUser) {
+    if (PropChecker.has(dataUser, 'email')) {
+      state[names.state.user][names.state.email] = dataUser.email
     }
-    if (PropChecker.has(data, 'name')) {
-      state[names.state.user][names.state.name] = data.name
+    if (PropChecker.has(dataUser, 'name')) {
+      state[names.state.user][names.state.name] = dataUser.name
     }
-    if (PropChecker.has(data, 'id')) {
-      state[names.state.user][names.state.id] = data.id
+    if (PropChecker.has(dataUser, 'id')) {
+      state[names.state.user][names.state.id] = dataUser.id
     }
-    if (PropChecker.has(data, 'role_id')) {
-      state[names.state.user][names.state.roleId] = data.role_id
+    if (PropChecker.has(dataUser, 'role_id')) {
+      state[names.state.user][names.state.roleId] = dataUser.role_id
     }
-    if (PropChecker.has(data, 'admin')) {
-      state[names.state.user][names.state.admin] = data.admin
+  },
+  [names.mutations.setRoleToUser] (state, dataRoles) {
+    if (PropChecker.has(dataRoles, 'isAdmin')) {
+      state[names.state.user][names.state.admin] = dataRoles.isAdmin
     }
-    if (PropChecker.has(data, 'employee')) {
-      state[names.state.user][names.state.employee] = data.admin
+    if (PropChecker.has(dataRoles, 'isEmployee')) {
+      state[names.state.user][names.state.employee] = dataRoles.isEmployee
     }
+  },
+  [names.mutations.setAllRoles] (state, allRoles) {
+    state[names.state.allRoles] = allRoles
   }
 }

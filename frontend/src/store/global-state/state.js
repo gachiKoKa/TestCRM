@@ -1,6 +1,7 @@
 import names from '../../constants/names'
 
 export default {
+  [names.allRoles]: [],
   [names.state.user]: {
     [names.state.id]: 0,
     [names.state.email]: '',

@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\UserRole;
+use App\Company;
 
-class UserRoleRepository extends AbstractRepository
+class CompanyRepository extends AbstractRepository
 {
 
     /**
@@ -12,6 +12,6 @@ class UserRoleRepository extends AbstractRepository
      */
     public function model(): string
     {
-        return UserRole::class;
+        return Company::class;
     }
 }
