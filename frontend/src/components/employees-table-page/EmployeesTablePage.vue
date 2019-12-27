@@ -52,7 +52,7 @@
         v-b-modal.addEmployee
         @click="resetEmployee()"
       >
-        Add Employee
+        Add User
       </b-button>
       <AddEmployee />
     </div>

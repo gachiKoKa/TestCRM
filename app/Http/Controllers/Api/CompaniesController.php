@@ -128,10 +128,12 @@ class CompaniesController extends Controller
 
     /**
      * @param int $id
+     * @param UsersRepository $usersRepository
      * @return JsonResponse
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(int $id, UsersRepository $usersRepository): JsonResponse
     {
+        $usersRepository->getBuilder()->where('company_id', $id)->update(['company_id' => null]);
         $deleted = $this->companiesRepository->delete($id);
 
         if (!$deleted) {

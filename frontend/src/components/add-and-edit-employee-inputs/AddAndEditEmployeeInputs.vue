@@ -48,6 +48,9 @@
         >
           {{ company.name }}
         </option>
+        <option :value="null">
+          Without company
+        </option>
       </b-form-select>
       <b-input-group
         prepend="Role"
