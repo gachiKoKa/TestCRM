@@ -22,7 +22,10 @@ export default {
   },
   methods: {
     resetEmployee () {
-      this.$store.commit(names.mutations.setEmployeeInputsToDefault)
+      this.$store.commit(
+        names.mutations.setEmployeeInputsToDefault,
+        this.$store.getters[names.getters.getDefaultRoleId]
+      )
     },
     setEmployeeInfo (userInfo) {
       this.$store.commit(names.mutations.setUserValueForEdit, userInfo)

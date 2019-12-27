@@ -4,7 +4,7 @@
       <NavBar />
     </div>
     <div v-if="companies.length === 0">
-      Чичяс компаний нет
+      Don't have companies yet
     </div>
     <table
       v-else
@@ -37,23 +37,29 @@
           <td>{{ company.name }}</td>
           <td>{{ company.email }}</td>
           <td>{{ company.web_site }}</td>
-          <td v-if="joinedToCompany(company.id)">
-            Joined
+          <td>
+            <span v-if="joinedToCompany(company.id)">
+              Joined
+            </span>
+            <span v-else> Not joined</span>
           </td>
-          <td v-if="isAdmin">
+          <td>
             <font-awesome-icon
+              v-if="isAdmin"
               icon="trash"
               class="mr-sm-3"
               @click="deleteCompany(company.id)"
             />
             <font-awesome-icon
+              v-if="isAdmin"
               v-b-modal.editCompany
               icon="pencil-alt"
               @click="setCompanyInfo(company)"
             />
-          </td>
-          <td v-else>
-            <b-button @click="subscribeToCompany(company.id)">
+            <b-button
+              v-if="!joinedToCompany(company.id)"
+              @click="subscribeToCompany(company.id)"
+            >
               Subscribe
             </b-button>
           </td>

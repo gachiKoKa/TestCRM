@@ -48,13 +48,18 @@ export default {
       })
     })
   },
-  [names.actions.setCompanyIdToUser] (companyId, userId) {
-    console.log(companyId)
+  [names.actions.setCompanyIdToUser] ({ rootState, commit }, companyId) {
+    const userId = rootState.globalState[names.state.user][names.state.id]
     return new Promise((resolve, reject) => {
-      axios.get(UrlMaker.getUrl(endpoints.companies) + '/' + companyId + '/' + userId)
+      axios.get(UrlMaker.getUrl(endpoints.joinToCompany) + '/' + companyId + '/' + userId)
         .then((response) => {
+          commit(names.mutations.setCompanyIdToUser, companyId)
           resolve()
         }).catch((error) => {
+          if (error.response.status !== 404) {
+            reject(error)
+            return
+          }
           ErrorsAlert.errorAlert(error.response.data)
           resolve()
         })

@@ -31,8 +31,7 @@ export default {
       this.$store.dispatch(names.actions.deleteCompany, companyId)
     },
     subscribeToCompany (companyId) {
-      const userId = this.$store.state.globalState[names.state.user][names.state.id]
-      this.$store.dispatch(names.actions.setCompanyIdToUser, companyId, userId)
+      this.$store.dispatch(names.actions.setCompanyIdToUser, companyId)
     },
     joinedToCompany (companyId) {
       return this.$store.state.globalState[names.state.user][names.state.companyId] === companyId

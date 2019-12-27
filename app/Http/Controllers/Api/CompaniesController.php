@@ -138,7 +138,7 @@ class CompaniesController extends Controller
      * @param int $userId
      * @return JsonResponse
      */
-    public function joinUserToCompany(UsersRepository $usersRepository, int $companyId, int $userId): JsonResponse
+    public function joinUserToCompany(int $companyId, int $userId, UsersRepository $usersRepository): JsonResponse
     {
         /** @var Company|null $company */
         $company = $this->companiesRepository->find($companyId);

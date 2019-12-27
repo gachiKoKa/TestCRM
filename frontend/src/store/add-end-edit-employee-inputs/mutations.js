@@ -1,6 +1,5 @@
 import names from '../../constants/names'
 import companiesGetters from '../../store/data-table-page/getters'
-import rolesGetters from '../../store/global-state/getters'
 
 export default {
   [names.mutations.setEmployeeName] (state, name) {
@@ -21,14 +20,14 @@ export default {
   [names.mutations.setEmployeeRoleId] (state, roleId) {
     state[names.state.employee][names.state.roleId] = roleId
   },
-  [names.mutations.setEmployeeInputsToDefault] (state) {
+  [names.mutations.setEmployeeInputsToDefault] (state, roleId) {
     state[names.state.employee][names.state.id] = 0
     state[names.state.employee][names.state.name] = ''
     state[names.state.employee][names.state.email] = ''
     state[names.state.employee][names.state.password] = ''
     state[names.state.employee][names.state.passwordConfirm] = ''
     state[names.state.employee][names.state.companyId] = companiesGetters[names.getters.getDefaultCompanyId]
-    state[names.state.employee][names.state.roleId] = rolesGetters[names.getters.getDefaultRoleId]
+    state[names.state.employee][names.state.roleId] = roleId
   },
   [names.mutations.setUserValueForEdit] (state, user) {
     state[names.state.employee][names.state.id] = user.id

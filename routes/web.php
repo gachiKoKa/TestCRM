@@ -17,4 +17,5 @@ Route::group(['prefix' => 'api', 'as' => 'api'], function () {
     Route::resource('companies','Api\CompaniesController')->except(['create', 'edit', 'show']);
     Route::get('companies-all', 'Api\CompaniesController@getAllCompanies');
     Route::resource('users', 'Api\UsersController')->except(['create', 'edit', 'show']);
+    Route::get('companies-join/{companyId}/{userId}', 'Api\CompaniesController@joinUserToCompany');
 });

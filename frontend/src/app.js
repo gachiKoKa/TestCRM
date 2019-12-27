@@ -23,7 +23,7 @@ Vue.use(VueCookie)
 router.beforeEach((to, from, next) => {
   const id = store.state.globalState[names.state.user][names.state.id]
   if (id === 0 && to.name !== 'sign-in-page' && to.name !== 'register-page') {
-    next({ name: 'register-page' })
+    next({ name: 'sign-in-page' })
     return
   }
   next()

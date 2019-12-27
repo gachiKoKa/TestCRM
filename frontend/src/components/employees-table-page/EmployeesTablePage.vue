@@ -4,7 +4,7 @@
       <NavBar />
     </div>
     <div v-if="employees.length === 0">
-      Чичяс РАБ_отников нет
+      Don't have companies yet
     </div>
     <table
       v-else

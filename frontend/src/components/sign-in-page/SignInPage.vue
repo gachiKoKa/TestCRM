@@ -39,6 +39,9 @@
                     Sign In
                   </b-button>
                 </div>
+                <router-link :to="{name: 'register-page'}">
+                  Don't have an account? Register!
+                </router-link>
               </div>
             </b-form>
           </div>

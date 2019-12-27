@@ -12,12 +12,18 @@ export default {
       this.$router.push({ name: 'data-table-page' })
     },
     logout () {
-      const loggedIn = !!this.$store.state.globalState[names.state.user][names.state.id]
-      if (!loggedIn && this.$router.currentRoute.name !== 'sign-in-page') {
-        this.$router.push({ path: '/sign-in' })
-        return false
-      }
-      return loggedIn
+      this.$store.commit(names.mutations.setUserToGlobalState, {
+        email: '',
+        name: '',
+        id: 0,
+        role_id: 0,
+        company_id: null
+      })
+      this.$store.commit(names.mutations.setRoleToUser, {
+        isAdmin: false,
+        isEmployee: false
+      })
+      this.$router.push({ path: '/sign-in' })
     }
   }
 }

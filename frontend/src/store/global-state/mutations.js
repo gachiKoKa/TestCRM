@@ -15,6 +15,9 @@ export default {
     if (PropChecker.has(dataUser, 'role_id')) {
       state[names.state.user][names.state.roleId] = dataUser.role_id
     }
+    if (PropChecker.has(dataUser, 'company_id')) {
+      state[names.state.user][names.state.companyId] = dataUser.company_id
+    }
   },
   [names.mutations.setRoleToUser] (state, dataRoles) {
     if (PropChecker.has(dataRoles, 'isAdmin')) {
@@ -26,5 +29,8 @@ export default {
   },
   [names.mutations.setAllRoles] (state, allRoles) {
     state[names.state.allRoles] = allRoles
+  },
+  [names.mutations.setCompanyIdToUser] (state, companyId) {
+    state[names.state.user][names.state.companyId] = companyId
   }
 }

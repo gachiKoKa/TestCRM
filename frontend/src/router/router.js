@@ -16,12 +16,12 @@ export default new Router({
       component: PageNotFoundComponent
     },
     {
-      path: '/',
+      path: '/register-page',
       name: 'register-page',
       component: RegisterPage
     },
     {
-      path: '/sign-in',
+      path: '/',
       name: 'sign-in-page',
       component: SignInPage
     },
