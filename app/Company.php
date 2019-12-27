@@ -2,21 +2,25 @@
 
 namespace App;
 
+use App\Services\CompanyLogoHandler;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Class Company
- * @property UploadedFile $logo
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string $web_site
+ * @property string $logo
+ * @property HasMany|Collection|User[] $users
+ * @property string $logoUrl
  * @package App
  */
 class Company extends Model
 {
     /**
-     * The attributes that are mass assignable.
-     *
      * @var array
      */
     protected $fillable = [
@@ -29,5 +33,12 @@ class Company extends Model
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+    public function setLogoUrl()
+    {
+        if ($this->logo != '') {
+            $this->logo = asset(CompanyLogoHandler::LOGOS_DIR . '/' . $this->logo);
+        }
     }
 }

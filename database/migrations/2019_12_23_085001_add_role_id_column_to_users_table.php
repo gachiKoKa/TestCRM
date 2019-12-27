@@ -7,8 +7,6 @@ use Illuminate\Database\Migrations\Migration;
 class AddRoleIdColumnToUsersTable extends Migration
 {
     /**
-     * Run the migrations.
-     *
      * @return void
      */
     public function up()
@@ -20,14 +18,13 @@ class AddRoleIdColumnToUsersTable extends Migration
     }
 
     /**
-     * Reverse the migrations.
-     *
      * @return void
      */
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->dropForeign('users_role_id_foreign');
+            $table->dropColumn('role_id');
         });
     }
 }

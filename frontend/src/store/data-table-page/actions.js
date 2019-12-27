@@ -14,24 +14,17 @@ export default {
         }
         resolve()
       }).catch((error) => {
-        if (error.response.status !== 500) {
-          reject(error.response)
-          return
-        }
-        ErrorsAlert.errorAlert(error.response.data)
-        resolve()
+        reject(error.response)
       })
     })
   },
   [names.actions.deleteCompany] ({ dispatch }, id) {
     return new Promise((resolve, reject) => {
-      axios.delete(
-        UrlMaker.getUrl(endpoints.companies) + '/' + id
-      ).then((response) => {
+      axios.delete(UrlMaker.getUrl(endpoints.companies) + '/' + id).then(() => {
         dispatch(names.actions.getCompanies)
         resolve()
       }).catch((error) => {
-        if (error.response.status !== 400) {
+        if (error.response.status !== 422) {
           reject(error.response.data)
           return
         }

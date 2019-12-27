@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class AbstractRepository
@@ -14,7 +15,6 @@ abstract class AbstractRepository
     protected $model;
 
     /**
-     * BaseRepository constructor.
      * @param Container $container
      * @throws BindingResolutionException
      */
@@ -36,14 +36,14 @@ abstract class AbstractRepository
     /**
      * @param int $id
      * @param array $data
-     * @return int
+     * @return bool
      */
-    public function update(int $id, array $data): int
+    public function update(int $id, array $data): bool
     {
         $model = $this->find($id);
 
         if (is_null($model)) {
-            return 0;
+            return false;
         }
 
         return $model->update($data);
@@ -88,7 +88,7 @@ abstract class AbstractRepository
     }
 
     /**
-     * @return Model[]
+     * @return Collection|Model[]
      */
     public function all(): iterable
     {

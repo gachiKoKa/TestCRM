@@ -8,7 +8,6 @@ import router from '../../router/router'
 
 export default {
   [names.actions.registerUser] ({ commit, state }) {
-    console.log(state)
     return new Promise((resolve, reject) => {
       axios.post(UrlMaker.getUrl(endpoints.registerUser), {
         email: state[names.state.email],
@@ -24,8 +23,7 @@ export default {
         }
         resolve()
       }).catch((error) => {
-        console.log(error)
-        if (error.response.status !== 422) {
+        if (error.response.status !== 400) {
           reject(error.response)
           return
         }

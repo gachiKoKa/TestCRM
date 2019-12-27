@@ -7,8 +7,6 @@ use Illuminate\Database\Migrations\Migration;
 class AddCompanyIdColumnToUsersTable extends Migration
 {
     /**
-     * Run the migrations.
-     *
      * @return void
      */
     public function up()
@@ -20,14 +18,13 @@ class AddCompanyIdColumnToUsersTable extends Migration
     }
 
     /**
-     * Reverse the migrations.
-     *
      * @return void
      */
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->dropForeign('users_company_id_foreign');
+            $table->dropColumn('company_id');
         });
     }
 }

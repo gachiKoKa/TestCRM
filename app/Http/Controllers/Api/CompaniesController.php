@@ -2,29 +2,31 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\constants\CommonConstants;
+use App\Company;
+use App\Constants\CommonConstants;
 use App\Http\Controllers\Controller;
-use App\Repositories\CompanyRepository;
-use App\Repositories\UserRepository;
+use App\Repositories\CompaniesRepository;
+use App\Repositories\UsersRepository;
 use App\Services\ApiResponseCreator;
 use App\Services\CompanyLogoHandler;
 use App\Services\Validation\StoreCompanyValidator;
 use App\Services\Validation\UpdateCompanyValidator;
+use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 
 class CompaniesController extends Controller
 {
-    /** @var CompanyRepository */
-    private $companyRepository;
+    /** @var CompaniesRepository */
+    private $companiesRepository;
 
     /** @var CompanyLogoHandler */
     private $companyLogoHandler;
 
-    public function __construct(CompanyRepository $companyRepository, CompanyLogoHandler $companyLogoHandler)
+    public function __construct(CompaniesRepository $companiesRepository, CompanyLogoHandler $companyLogoHandler)
     {
-        $this->companyRepository = $companyRepository;
+        $this->companiesRepository = $companiesRepository;
         $this->companyLogoHandler = $companyLogoHandler;
     }
 
@@ -33,45 +35,56 @@ class CompaniesController extends Controller
      */
     public function index(): JsonResponse
     {
-        $companies = $this->companyRepository->getBuilder()->paginate(CommonConstants::RECORDS_PER_PAGE)->items();
+        /** @var Company[] $companies */
+        $companies = $this->companiesRepository
+            ->getBuilder()
+            ->paginate(CommonConstants::RECORDS_PER_PAGE)
+            ->items()
+        ;
 
         foreach ($companies as $company) {
-            if (is_null($company->logo)) {
-                $company->logo = '';
-                continue;
-            }
-
-            $company->logo = $this->companyLogoHandler->getCompanyLogoUrl($company->logo);
+            $company->setLogoUrl();
         }
 
         return ApiResponseCreator::responseOk($companies);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
+     * @return JsonResponse
+     */
+    public function getAllCompanies(): JsonResponse
+    {
+        $companies = $this->companiesRepository->getBuilder()->select(['id', 'name'])->get()->toArray();
+
+        return ApiResponseCreator::responseOk($companies);
+    }
+
+    /**
      * @param StoreCompanyValidator $storeCompanyValidator
      * @return JsonResponse
      */
     public function store(StoreCompanyValidator $storeCompanyValidator): JsonResponse
     {
         try {
-            $newCompanyData = $storeCompanyValidator->validate();
+            $requestData = $storeCompanyValidator->validate();
         } catch (ValidationException $e) {
-            return ApiResponseCreator::responseError($e->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+            return ApiResponseCreator::responseError($e->errors(), Response::HTTP_BAD_REQUEST);
         }
 
-        $uploadFileName = $this->companyLogoHandler->uploadLogo();
-        $newCompanyData['logo'] = $uploadFileName;
-        $newCompany = $this->companyRepository->create($newCompanyData);
-        $newCompany->logo = $this->companyLogoHandler->getCompanyLogoUrl($newCompany->logo);
+        /** @var Company $company */
+        $company = $this->companiesRepository->create($requestData);
 
-        return ApiResponseCreator::responseOk($newCompany);
+        if (!$this->companyLogoHandler->uploadLogo($company)) {
+            return ApiResponseCreator::responseError(
+                'Company logo was not updated.',
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        return ApiResponseCreator::responseOk();
     }
 
     /**
-     * Update the specified resource in storage.
-     *
      * @param int $id
      * @param UpdateCompanyValidator $updateCompanyValidator
      * @return JsonResponse
@@ -83,71 +96,59 @@ class CompaniesController extends Controller
         try {
             $updateCompanyData = $updateCompanyValidator->validate();
         } catch (ValidationException $e) {
-            return ApiResponseCreator::responseError($e->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+            return ApiResponseCreator::responseError($e->errors(), Response::HTTP_BAD_REQUEST);
         }
 
-        $company = $this->companyRepository->find($id);
-        $uploadFileName = $this->companyLogoHandler->uploadLogo();
+        /** @var Company $company */
+        $company = $this->companiesRepository->find($id);
+        $companyWasUpdated = $this->companiesRepository->update($id, $updateCompanyData);
+        $companyLogoWasUpdated = $this->companyLogoHandler->uploadLogo($company);
 
-        if ($uploadFileName != '') {
-            $updateCompanyData['logo'] = $uploadFileName;
-        }
-
-        $updated = $this->companyRepository->update($id, $updateCompanyData);
-
-        if (!$updated) {
-            return ApiResponseCreator::responseError('Company was not updated.', Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $company->refresh();
-        $company->logo = $this->companyLogoHandler->getCompanyLogoUrl($company->logo);
-
-        return ApiResponseCreator::responseOk($company);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return JsonResponse
-     */
-    public function destroy($id): JsonResponse
-    {
-       $deletedCompanyLogo = $this->companyLogoHandler->deleteCompanyLogoFromDirectory($id);
-       $deletedCompany = $this->companyRepository->delete($id);
-
-        if (!$deletedCompany || !$deletedCompanyLogo) {
-            return ApiResponseCreator::responseError('Company was not deleted properly', Response::HTTP_BAD_REQUEST);
+        if (!$companyWasUpdated || !$companyLogoWasUpdated) {
+            return ApiResponseCreator::responseError(
+                'Company was not updated properly.',
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         }
 
         return ApiResponseCreator::responseOk();
     }
 
     /**
+     * @param int $id
      * @return JsonResponse
      */
-    public function getAllCompanies(): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
-        $companies = $this->companyRepository->getBuilder()->select(['id', 'name'])->get()->toArray();
+        $deleted = $this->companiesRepository->delete($id);
 
-        return ApiResponseCreator::responseOk($companies);
+        if (!$deleted) {
+            return ApiResponseCreator::responseError(
+                'Company was not deleted properly.',
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        return ApiResponseCreator::responseOk();
     }
 
     /**
-     * @param UserRepository $userRepository
+     * @param UsersRepository $usersRepository
      * @param int $companyId
      * @param int $userId
      * @return JsonResponse
      */
-    public function joinUserToCompany(UserRepository $userRepository, int $companyId, int $userId): JsonResponse
+    public function joinUserToCompany(UsersRepository $usersRepository, int $companyId, int $userId): JsonResponse
     {
-        $company = $this->companyRepository->find($companyId);
+        /** @var Company|null $company */
+        $company = $this->companiesRepository->find($companyId);
 
         if (is_null($company)) {
             return ApiResponseCreator::responseError('Company not found', Response::HTTP_NOT_FOUND);
         }
 
-        $user = $userRepository->find($userId);
+        /** @var User|null $user */
+        $user = $usersRepository->find($userId);
 
         if (is_null($user)) {
             return ApiResponseCreator::responseError('User not found', Response::HTTP_NOT_FOUND);

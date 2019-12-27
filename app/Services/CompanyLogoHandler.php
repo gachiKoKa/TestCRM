@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Repositories\CompanyRepository;
+use App\Company;
 use Illuminate\Filesystem\Filesystem;
 
 class CompanyLogoHandler
 {
-    private const DIR = 'companies_logo';
+    public const LOGOS_DIR = 'companies_logo';
 
     /** @var CompanyLogoRetriever */
     private $companyLogoRetriever;
@@ -15,69 +15,55 @@ class CompanyLogoHandler
     /** @var FileNameCreator */
     private $fileNameCreator;
 
-    /** @var CompanyRepository */
-    private $companyRepository;
-
     /** @var Filesystem */
     private $filesystem;
 
     public function __construct(
         CompanyLogoRetriever $companyLogoRetriever,
-        FileNameCreator $fileNameCreator, CompanyRepository $companyRepository, Filesystem $filesystem)
-    {
+        FileNameCreator $fileNameCreator,
+        Filesystem $filesystem
+    ) {
         $this->companyLogoRetriever = $companyLogoRetriever;
         $this->fileNameCreator = $fileNameCreator;
-        $this->companyRepository = $companyRepository;
         $this->filesystem = $filesystem;
     }
 
     /**
-     * @return string
+     * @param Company $company
+     * @return bool
      */
-    public function uploadLogo(): string
+    public function uploadLogo(Company $company): bool
     {
         $logo = $this->companyLogoRetriever->retrieveFile();
-        $newLogoName = '';
 
         if (!is_null($logo)) {
             $fullPath = $this->fullPath();
             $newLogoName = $this->fileNameCreator->createName($logo);
             $logo->move($fullPath, $newLogoName);
+            $company->logo = $newLogoName;
+            return $company->save();
         }
 
-        return $newLogoName;
+        return true;
     }
 
     /**
-     * @param string $logoName
-     * @return string
-     */
-    public function getCompanyLogoUrl(string $logoName): string
-    {
-        return asset(self::DIR . '/' . $logoName);
-    }
-
-    /**
-     * @param int $id
+     * @param Company $company
      * @return bool
      */
-    public function deleteCompanyLogoFromDirectory(int $id): bool
+    public function deleteLogo(Company $company): bool
     {
-        $company = $this->companyRepository->find($id);
-
-        if (is_null($company) || (string)$company->logo == '') {
+        if ($company->logo == '') {
             return true;
         }
 
         $fullPath = $this->fullPath($company->logo);
 
-        if (!file_exists($fullPath)) {
-            $this->companyRepository->update($id, ['logo' => '']);
-
-            return true;
+        if (file_exists($fullPath)) {
+            return $this->filesystem->delete($fullPath);
         }
 
-        return $this->filesystem->delete($fullPath);
+        return true;
     }
 
     /**
@@ -86,7 +72,7 @@ class CompanyLogoHandler
      */
     private function fullPath(string $fileName = ''): string
     {
-        $path = public_path(self::DIR);
+        $path = public_path(self::LOGOS_DIR);
 
         if ($fileName != '') {
             $path .= '/' . $fileName;

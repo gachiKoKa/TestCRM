@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\constants\CommonConstants;
+use App\Constants\CommonConstants;
 use App\Http\Controllers\Controller;
-use App\Repositories\UserRepository;
+use App\Repositories\UsersRepository;
 use App\Services\ApiResponseCreator;
 use App\Services\Validation\StoreUserValidator;
 use App\Services\Validation\UpdateUserValidator;
@@ -12,19 +12,17 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 
-class UserController extends Controller
+class UsersController extends Controller
 {
-    /** @var UserRepository */
+    /** @var UsersRepository */
     private $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UsersRepository $userRepository)
     {
         $this->userRepository = $userRepository;
     }
 
     /**
-     * Display a listing of the resource.
-     *
      * @return JsonResponse
      */
     public function index(): JsonResponse
@@ -40,27 +38,23 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param StoreUserValidator $storeEmployeeValidator
+     * @param StoreUserValidator $storeUserValidator
      * @return JsonResponse
      */
-    public function store(StoreUserValidator $storeEmployeeValidator): JsonResponse
+    public function store(StoreUserValidator $storeUserValidator): JsonResponse
     {
         try {
-            $newUserData = $storeEmployeeValidator->validate();
+            $userData = $storeUserValidator->validate();
         } catch (ValidationException $e) {
-            return ApiResponseCreator::responseError($e->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+            return ApiResponseCreator::responseError($e->errors(), Response::HTTP_BAD_REQUEST);
         }
 
-        $newUser = $this->userRepository->create($newUserData);
+        $this->userRepository->create($userData);
 
-        return ApiResponseCreator::responseOk($newUser);
+        return ApiResponseCreator::responseOk();
     }
 
     /**
-     * Update the specified resource in storage.
-     *
      * @param UpdateUserValidator $updateUserValidator
      * @param int $id
      * @return JsonResponse
@@ -70,23 +64,21 @@ class UserController extends Controller
         $updateUserValidator->id = $id;
 
         try {
-            $updateUserData = $updateUserValidator->validate();
+            $userData = $updateUserValidator->validate();
         } catch (ValidationException $e) {
-            return ApiResponseCreator::responseError($e->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+            return ApiResponseCreator::responseError($e->errors(), Response::HTTP_BAD_REQUEST);
         }
 
-        $updated = $this->userRepository->update($id, $updateUserData);
+        $updated = $this->userRepository->update($id, $userData);
 
         if (!$updated) {
-            return ApiResponseCreator::responseError('User was not updated', Response::HTTP_BAD_REQUEST);
+            return ApiResponseCreator::responseError('User was not updated.', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return ApiResponseCreator::responseOk($updated);
+        return ApiResponseCreator::responseOk();
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
      * @param int $id
      * @return JsonResponse
      */
@@ -95,10 +87,9 @@ class UserController extends Controller
         $deletedUser = $this->userRepository->delete($id);
 
         if (!$deletedUser) {
-            return ApiResponseCreator::responseError('User was not deleted', Response::HTTP_BAD_REQUEST);
+            return ApiResponseCreator::responseError('User was not deleted.', Response::HTTP_BAD_REQUEST);
         }
 
         return ApiResponseCreator::responseOk();
     }
-
 }

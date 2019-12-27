@@ -21,7 +21,7 @@ export default {
         }
         resolve()
       }).catch((error) => {
-        if (error.response.status !== 422 || error.response.status !== 400) {
+        if (error.response.status !== 400) {
           reject(error.response)
           return
         }

@@ -3,7 +3,6 @@
 namespace App\Services\Validation;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Validator as ValidatorObj;
@@ -27,26 +26,26 @@ abstract class AbstractCustomValidator
      */
     public function validate(): array
     {
-        $data = $this->request->all();
+        $requestData = $this->request->all();
 
-        if ($this->id > 0 && !array_key_exists('id', $data)) {
-            $data['id'] = $this->id;
+        if ($this->id > 0 && !array_key_exists('id', $requestData)) {
+            $requestData['id'] = $this->id;
         }
 
-        if (array_key_exists('_token', $data)) {
-            unset($data['_token']);
+        if (array_key_exists('_token', $requestData)) {
+            unset($requestData['_token']);
         }
 
-        if (array_key_exists('_method', $data)) {
-            unset($data['_method']);
+        if (array_key_exists('_method', $requestData)) {
+            unset($requestData['_method']);
         }
 
         $rules = $this->getRules();
         /** @var ValidatorObj $validator */
-        $validator = Validator::make($data, $rules);
+        $validator = Validator::make($requestData, $rules);
         $validator->validate();
 
-        return $data;
+        return $requestData;
     }
 
     /**

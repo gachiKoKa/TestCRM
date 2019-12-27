@@ -12,9 +12,9 @@
 */
 
 Route::group(['prefix' => 'api', 'as' => 'api'], function () {
-    Route::post('register-user', 'Api\RegisterAndAuthController@registerUser');
-    Route::post('sign-in-user', 'Api\RegisterAndAuthController@signInUser');
+    Route::post('register-user', 'Api\CustomAuthController@registerUser');
+    Route::post('sign-in-user', 'Api\CustomAuthController@signInUser');
     Route::resource('companies','Api\CompaniesController')->except(['create', 'edit', 'show']);
     Route::get('companies-all', 'Api\CompaniesController@getAllCompanies');
-    Route::resource('employees', 'Api\UserController')->except(['create', 'edit', 'show']);
+    Route::resource('users', 'Api\UsersController')->except(['create', 'edit', 'show']);
 });

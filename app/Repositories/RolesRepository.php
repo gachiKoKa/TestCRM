@@ -2,16 +2,15 @@
 
 namespace App\Repositories;
 
-use App\Company;
+use App\UserRole;
 
-class CompanyRepository extends AbstractRepository
+class RolesRepository extends AbstractRepository
 {
-
     /**
      * @inheritDoc
      */
     public function model(): string
     {
-        return Company::class;
+        return UserRole::class;
     }
 }

@@ -2,53 +2,78 @@
 
 namespace App\Services;
 
-use App\Repositories\UserRepository;
+use App\Repositories\UsersRepository;
+use App\User;
+use App\UserRole;
 
 class RolesChecker
 {
-    /** @var UserRepository */
+    /** @var UsersRepository */
     private $userRepository;
 
     /** @var RolesKeeper */
     private $rolesKeeper;
 
-    public function __construct(UserRepository $userRepository, RolesKeeper $rolesKeeper)
+    /** @var User|null */
+    private $user = null;
+
+    public function __construct(UsersRepository $userRepository, RolesKeeper $rolesKeeper)
     {
         $this->userRepository = $userRepository;
         $this->rolesKeeper = $rolesKeeper;
     }
 
     /**
-     * @param $userId
+     * @param int|null $userId
      * @return bool
      */
-    public function isAdmin(int $userId): bool
+    public function isAdmin(?int $userId = null): bool
     {
-        $user = $this->userRepository->find($userId);
-
-        if (is_null($user)) {
-            return false;
-        }
-
         $adminRole = $this->rolesKeeper->getAdminRole();
 
-        return $user->id === $adminRole->id;
+        return $this->checkRole($adminRole, $userId);
     }
 
     /**
-     * @param $userId
+     * @param int|null $userId
      * @return bool
      */
-    public function isEmployee(int $userId): bool
+    public function isEmployee(?int $userId = null): bool
     {
-        $user = $this->userRepository->find($userId);
+        $employeeRole = $this->rolesKeeper->getEmployeeRole();
+
+        return $this->checkRole($employeeRole, $userId);
+    }
+
+    /**
+     * @param User $user
+     * @return RolesChecker
+     */
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @param UserRole $role
+     * @param int|null $userId
+     * @return bool
+     */
+    private function checkRole(UserRole $role, ?int $userId = null)
+    {
+        /** @var User|null $user */
+        $user = $this->user;
+
+        if (!is_null($userId) && $userId > 0) {
+            $user = $this->userRepository->find($userId);
+        }
 
         if (is_null($user)) {
             return false;
         }
 
-        $employeeRole = $this->rolesKeeper->getEmployeeRole();
-
-        return $user->id === $employeeRole->id;
+        return $user->id === $role->id;
     }
 }

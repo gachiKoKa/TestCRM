@@ -7,8 +7,6 @@ use Illuminate\Database\Migrations\Migration;
 class CreateCompaniesTable extends Migration
 {
     /**
-     * Run the migrations.
-     *
      * @return void
      */
     public function up()
@@ -24,8 +22,6 @@ class CreateCompaniesTable extends Migration
     }
 
     /**
-     * Reverse the migrations.
-     *
      * @return void
      */
     public function down()

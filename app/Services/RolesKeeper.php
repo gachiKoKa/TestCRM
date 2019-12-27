@@ -2,15 +2,16 @@
 
 namespace App\Services;
 
-use App\Repositories\RoleRepository;
+use App\Constants\CommonConstants;
+use App\Repositories\RolesRepository;
 use App\UserRole;
 
 class RolesKeeper
 {
-    /** @var RoleRepository */
+    /** @var RolesRepository */
     private $userRoleRepository;
 
-    public function __construct(RoleRepository $userRoleRepository)
+    public function __construct(RolesRepository $userRoleRepository)
     {
         $this->userRoleRepository = $userRoleRepository;
     }
@@ -20,16 +21,7 @@ class RolesKeeper
      */
     public function getAdminRole(): UserRole
     {
-        /** @var UserRole $adminRole */
-        $adminRole = $this->userRoleRepository->getBuilder()->where('name', 'admin')->first();
-
-        if (is_null($adminRole)) {
-            $this->userRoleRepository->create([
-                'name' => 'admin'
-            ]);
-        }
-
-        return $adminRole;
+        return $this->getRole(CommonConstants::ADMIN_ROLE);
     }
 
     /**
@@ -37,15 +29,24 @@ class RolesKeeper
      */
     public function getEmployeeRole(): UserRole
     {
-        /** @var UserRole $employeeRole */
-        $employeeRole = $this->userRoleRepository->getBuilder()->where('name', 'employee')->first();
+        return $this->getRole(CommonConstants::EMPLOYEE_ROLE);
+    }
 
-        if (is_null($employeeRole)) {
-            $this->userRoleRepository->create([
-                'name' => 'employee'
+    /**
+     * @param string $roleName
+     * @return UserRole
+     */
+    private function getRole(string $roleName): UserRole
+    {
+        /** @var UserRole $role */
+        $role = $this->userRoleRepository->getBuilder()->where('name', $roleName)->first();
+
+        if (is_null($role)) {
+            $role = $this->userRoleRepository->create([
+                'name' => $roleName
             ]);
         }
 
-        return $employeeRole;
+        return $role;
     }
 }

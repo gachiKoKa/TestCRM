@@ -7,12 +7,14 @@ import ErrorsAlert from '../../services/ErrorsAlert'
 
 export default {
   [names.actions.getAllUsers] ({ commit }) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       axios.get(UrlMaker.getUrl(endpoints.employees)).then((response) => {
         if (PropChecker.hasData(response)) {
           commit(names.mutations.setAllUsers, response.data)
         }
         resolve()
+      }).catch((error) => {
+        reject(error.response.data)
       })
     })
   },

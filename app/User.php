@@ -3,16 +3,19 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class User
- * @property HasOne|UserRole|null $role
  * @property int $id
+ * @property string $name
+ * @property string $email
  * @property string password
+ * @property int $role_id
+ * @property int|null $company_id
+ * @property BelongsTo|Company|null $company
+ * @property BelongsTo|UserRole|null $role
  * @package App
  */
 class User extends Authenticatable
@@ -20,8 +23,6 @@ class User extends Authenticatable
     use Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
      * @var array
      */
     protected $fillable = [
@@ -29,21 +30,10 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for arrays.
-     *
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
+        'password',
     ];
 
     /**
