@@ -1,4 +1,5 @@
 import names from '../../constants/names'
+import VueCookie from 'vue-cookie'
 
 export default {
   methods: {
@@ -23,6 +24,8 @@ export default {
         isAdmin: false,
         isEmployee: false
       })
+      this.$store.commit(names.mutations.setAuthConfig, '')
+      VueCookie.delete('token')
       this.$router.push({ path: '/sign-in' })
     }
   }

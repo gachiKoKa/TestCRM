@@ -11,7 +11,8 @@ export default {
     getAllUsers: 'GET_ALL_USERS',
     editEmployee: 'EDIT_EMPLOYEE',
     deleteEmployee: 'DELETE_EMPLOYEE',
-    setCompanyIdToUser: 'SET_COMPANY_ID_TO_USER'
+    setCompanyIdToUser: 'SET_COMPANY_ID_TO_USER',
+    getUser: 'GET_USER'
   },
   getters: {
     getEmployeeData: 'GET_EMPLOYEE_DATA',
@@ -48,6 +49,7 @@ export default {
     setAllUsers: 'SET_ALL_USERS',
     setUserValueForEdit: 'SET_USER_VALUE_FOR_EDIT',
     setCompanyIdToUser: 'SET_COMPANY_ID_TO_USER',
+    setAuthConfig: 'SET_AUTH_CONFIG',
     setPagination: 'SET_PAGINATION',
     setCurrentPage: 'SET_CURRENT_PAGE',
     setAction: 'SET_ACTION'
@@ -72,6 +74,7 @@ export default {
     employees: 'EMPLOYEES',
     allCompanies: 'ALL_COMPANIES',
     allRoles: 'ALL_ROLES',
+    authConfig: 'AUTH_CONFIG',
     currentPage: 'CURRENT_PAGE',
     pagination: 'PAGINATION',
     action: 'ACTION'

@@ -16,6 +16,7 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\JWTAuth;
 
 class CustomAuthController extends Controller
 {
@@ -31,16 +32,21 @@ class CustomAuthController extends Controller
     /** @var array */
     private $allRoles = [];
 
+    /** @var JWTAuth */
+    private $jwt;
+
     public function __construct(
         UsersRepository $userRepository,
         RolesChecker $rolesChecker,
         RolesKeeper $rolesKeeper,
-        RolesRepository $roleRepository
+        RolesRepository $roleRepository,
+        JWTAuth $jwtAuth
     ) {
         $this->userRepository = $userRepository;
         $this->rolesChecker = $rolesChecker;
         $this->rolesKeeper = $rolesKeeper;
         $this->allRoles = $roleRepository->all()->toArray();
+        $this->jwt = $jwtAuth;
     }
 
     /**
@@ -60,7 +66,13 @@ class CustomAuthController extends Controller
         $requestData['role_id'] = $employeeRole->id;
         /** @var User $user */
         $user = $this->userRepository->create($requestData);
-        $response = new UserResponse($user, $this->allRoles, true, false, '');
+        $token = $this->jwt->attempt(['email' => $user->email, 'password' => $requestData['password']]);
+
+        if (!$token) {
+            return ApiResponseCreator::responseError('User token was not generated.', Response::HTTP_UNAUTHORIZED);
+        }
+
+        $response = new UserResponse($user, $this->allRoles, true, false, $token);
 
         return ApiResponseCreator::responseOk($response);
     }
@@ -84,8 +96,15 @@ class CustomAuthController extends Controller
             return ApiResponseCreator::responseError('Incorrect password.', Response::HTTP_BAD_REQUEST);
         }
 
+        $token = $this->jwt->attempt(['email' => $userData['email'], 'password' => $userData['password']]);
+
+        if (!$token) {
+            return ApiResponseCreator::responseError('User token was not generated.', Response::HTTP_UNAUTHORIZED);
+        }
+
+
         $isAdmin = $this->rolesChecker->setUser($user)->isAdmin();
-        $response = new UserResponse($user, $this->allRoles, !$isAdmin, $isAdmin, '');
+        $response = new UserResponse($user, $this->allRoles, !$isAdmin, $isAdmin, $token);
 
         return ApiResponseCreator::responseOk($response);
     }

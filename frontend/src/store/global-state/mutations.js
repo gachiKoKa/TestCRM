@@ -1,5 +1,6 @@
 import names from '../../constants/names'
 import PropChecker from '../../services/PropChecker'
+import VueCookie from 'vue-cookie'
 
 export default {
   [names.mutations.setUserToGlobalState] (state, dataUser) {
@@ -32,5 +33,9 @@ export default {
   },
   [names.mutations.setCompanyIdToUser] (state, companyId) {
     state[names.state.user][names.state.companyId] = companyId
+  },
+  [names.mutations.setAuthConfig] (state, token) {
+    state[names.state.authConfig].headers.Authorization = 'Bearer ' + token
+    VueCookie.set('token', token)
   }
 }

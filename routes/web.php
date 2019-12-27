@@ -14,8 +14,11 @@
 Route::group(['prefix' => 'api', 'as' => 'api'], function () {
     Route::post('register-user', 'Api\CustomAuthController@registerUser');
     Route::post('sign-in-user', 'Api\CustomAuthController@signInUser');
-    Route::resource('companies','Api\CompaniesController')->except(['create', 'edit', 'show']);
-    Route::get('companies-all', 'Api\CompaniesController@getAllCompanies');
-    Route::resource('users', 'Api\UsersController')->except(['create', 'edit', 'show']);
-    Route::get('companies-join/{companyId}/{userId}', 'Api\CompaniesController@joinUserToCompany');
+    Route::group(['middleware' => 'custom.jwt'], function () {
+        Route::resource('companies','Api\CompaniesController')->except(['create', 'edit', 'show']);
+        Route::get('companies-all', 'Api\CompaniesController@getAllCompanies');
+        Route::resource('users', 'Api\UsersController')->except(['create', 'edit', 'show']);
+        Route::get('users/get/by-token', 'Api\UsersController@getByToken');
+        Route::get('companies-join/{companyId}/{userId}', 'Api\CompaniesController@joinUserToCompany');
+    });
 });

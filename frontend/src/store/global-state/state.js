@@ -10,5 +10,10 @@ export default {
     [names.state.companyId]: null,
     [names.state.admin]: false,
     [names.state.employee]: false
+  },
+  [names.state.authConfig]: {
+    headers: {
+      Authorization: ''
+    }
   }
 }

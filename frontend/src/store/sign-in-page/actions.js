@@ -17,6 +17,7 @@ export default {
           commit(names.mutations.setUserToGlobalState, response.data.user)
           commit(names.mutations.setRoleToUser, response.data)
           commit(names.mutations.setAllRoles, response.data.roles)
+          commit(names.mutations.setAuthConfig, response.data.token)
           router.push({ name: 'data-table-page' })
         }
         resolve()

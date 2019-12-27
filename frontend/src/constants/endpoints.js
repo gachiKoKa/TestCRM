@@ -4,5 +4,6 @@ export default {
   companies: 'companies',
   employees: 'users',
   allCompanies: 'companies-all',
-  joinToCompany: 'companies-join'
+  joinToCompany: 'companies-join',
+  getUser: 'users/get/by-token'
 }
