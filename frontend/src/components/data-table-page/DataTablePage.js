@@ -37,6 +37,9 @@ export default {
     },
     joinedToCompany (companyId) {
       return this.$store.state.globalState[names.state.user][names.state.companyId] === companyId
+    },
+    unsubscribe () {
+      this.$store.dispatch(names.actions.setCompanyIdToUser, 0)
     }
   }
 }

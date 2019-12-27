@@ -9,14 +9,13 @@ use App\Repositories\CompaniesRepository;
 use App\Repositories\UsersRepository;
 use App\Services\ApiResponseCreator;
 use App\Services\CompanyLogoHandler;
+use App\Services\CompanyMailSender;
 use App\Services\PaginationHelper;
 use App\Services\Validation\StoreCompanyValidator;
 use App\Services\Validation\UpdateCompanyValidator;
 use App\Structures\PaginatedData;
-use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class CompaniesController extends Controller
@@ -147,29 +146,21 @@ class CompaniesController extends Controller
     }
 
     /**
-     * @param UsersRepository $usersRepository
      * @param int $companyId
      * @param int $userId
+     * @param CompanyMailSender $companyMailSender
      * @return JsonResponse
      */
-    public function joinUserToCompany(int $companyId, int $userId, UsersRepository $usersRepository): JsonResponse
-    {
-        /** @var Company|null $company */
-        $company = $this->companiesRepository->find($companyId);
+    public function joinUserToCompany(
+        int $companyId,
+        int $userId,
+        CompanyMailSender $companyMailSender
+    ): JsonResponse {
+        $response = $companyMailSender->sendNotificationToCompanyEmail($companyId, $userId);
 
-        if (is_null($company)) {
-            return ApiResponseCreator::responseError('Company not found', Response::HTTP_NOT_FOUND);
+        if (is_null($response->user) || $companyId > 0 && is_null($response->company)) {
+            return ApiResponseCreator::responseError('Company or user not found.', Response::HTTP_NOT_FOUND);
         }
-
-        /** @var User|null $user */
-        $user = $usersRepository->find($userId);
-
-        if (is_null($user)) {
-            return ApiResponseCreator::responseError('User not found', Response::HTTP_NOT_FOUND);
-        }
-
-        $user->company_id = $company->id;
-        $user->save();
 
         return ApiResponseCreator::responseOk();
     }

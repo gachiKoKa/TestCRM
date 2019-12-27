@@ -62,6 +62,12 @@
             >
               Subscribe
             </b-button>
+            <b-button
+              v-if="joinedToCompany(company.id)"
+              @click="unsubscribe()"
+            >
+              Unsubscribe
+            </b-button>
           </td>
         </tr>
       </tbody>

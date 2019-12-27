@@ -29,7 +29,7 @@
             class="mr-3"
             @click="toEmployeesTable"
           >
-            Employees
+            Users
           </b-button>
           <b-button @click="logout()">
             Logout

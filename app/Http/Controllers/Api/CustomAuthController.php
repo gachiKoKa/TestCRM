@@ -62,11 +62,12 @@ class CustomAuthController extends Controller
         }
 
         $employeeRole = $this->rolesKeeper->getEmployeeRole();
+        $plainPassword = $requestData['password'];
         $requestData['password'] = Hash::make($requestData['password']);
         $requestData['role_id'] = $employeeRole->id;
         /** @var User $user */
         $user = $this->userRepository->create($requestData);
-        $token = $this->jwt->attempt(['email' => $user->email, 'password' => $requestData['password']]);
+        $token = $this->jwt->attempt(['email' => $user->email, 'password' => $plainPassword]);
 
         if (!$token) {
             return ApiResponseCreator::responseError('User token was not generated.', Response::HTTP_UNAUTHORIZED);
