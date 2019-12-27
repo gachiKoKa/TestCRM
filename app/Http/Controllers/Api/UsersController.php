@@ -6,8 +6,10 @@ use App\Constants\CommonConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\UsersRepository;
 use App\Services\ApiResponseCreator;
+use App\Services\PaginationHelper;
 use App\Services\Validation\StoreUserValidator;
 use App\Services\Validation\UpdateUserValidator;
+use App\Structures\PaginatedData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
@@ -31,10 +33,20 @@ class UsersController extends Controller
             ->getBuilder()
             ->with(['role', 'company'])
             ->paginate(CommonConstants::RECORDS_PER_PAGE)
-            ->items()
         ;
 
-        return ApiResponseCreator::responseOk($users);
+        $usersItems = $users->items();
+
+        $paginatedData = new PaginatedData();
+        $paginatedData->currentPage = $users->currentPage();
+        $paginatedData->lastPage = $users->lastPage();
+        $paginatedData->records = $usersItems;
+        $paginationBlock = PaginationHelper::generatePaginationBlock($paginatedData);
+
+        return ApiResponseCreator::responseOk([
+            'users' => $usersItems,
+            'pagination' => $paginationBlock
+        ]);
     }
 
     /**

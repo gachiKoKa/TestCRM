@@ -9,11 +9,14 @@ use App\Repositories\CompaniesRepository;
 use App\Repositories\UsersRepository;
 use App\Services\ApiResponseCreator;
 use App\Services\CompanyLogoHandler;
+use App\Services\PaginationHelper;
 use App\Services\Validation\StoreCompanyValidator;
 use App\Services\Validation\UpdateCompanyValidator;
+use App\Structures\PaginatedData;
 use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class CompaniesController extends Controller
@@ -35,18 +38,27 @@ class CompaniesController extends Controller
      */
     public function index(): JsonResponse
     {
-        /** @var Company[] $companies */
+
         $companies = $this->companiesRepository
             ->getBuilder()
             ->paginate(CommonConstants::RECORDS_PER_PAGE)
-            ->items()
         ;
+        $companyItems = $companies->items();
 
-        foreach ($companies as $company) {
-            $company->setLogoUrl();
+        foreach ($companyItems as $companyItem) {
+            $companyItem->setLogoUrl();
         }
 
-        return ApiResponseCreator::responseOk($companies);
+        $paginatedData = new PaginatedData();
+        $paginatedData->currentPage = $companies->currentPage();
+        $paginatedData->lastPage = $companies->lastPage();
+        $paginatedData->records = $companyItems;
+        $paginationBlock = PaginationHelper::generatePaginationBlock($paginatedData);
+
+        return ApiResponseCreator::responseOk([
+            'companies' => $companyItems,
+            'pagination' => $paginationBlock
+        ]);
     }
 
     /**

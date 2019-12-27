@@ -46,6 +46,7 @@
         </tr>
       </tbody>
     </table>
+    <Pagination />
     <div v-if="isAdmin">
       <b-button
         v-b-modal.addEmployee

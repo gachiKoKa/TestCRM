@@ -2,12 +2,14 @@ import names from '../../constants/names'
 import NavBar from '../nav-bar/NavBar.vue'
 import AddEmployee from '../add-employee/AddEmployee.vue'
 import EditEmployee from '../edit-employee/EditEmployee.vue'
+import Pagination from '../pagination/Pagination.vue'
 
 export default {
   components: {
     NavBar: NavBar,
     AddEmployee: AddEmployee,
-    EditEmployee: EditEmployee
+    EditEmployee: EditEmployee,
+    Pagination: Pagination
   },
   beforeCreate () {
     this.$store.dispatch(names.actions.getAllUsers)

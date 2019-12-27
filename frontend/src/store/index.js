@@ -7,6 +7,7 @@ import DataTablePage from './dataTablePage'
 import AddAndEditCompanyInputs from './addAndEditCompanyInputs'
 import EmployeesTablePage from './employeesTablePage'
 import AddAndEditEmployeeInputs from './addAndEditEmployeeInputs'
+import Pagination from './pagination'
 
 Vue.use(Vuex)
 
@@ -17,7 +18,8 @@ const modules = {
   dataTablePage: DataTablePage,
   addAndEditCompanyInputs: AddAndEditCompanyInputs,
   employeesTablePage: EmployeesTablePage,
-  addAndEditEmployeeInputs: AddAndEditEmployeeInputs
+  addAndEditEmployeeInputs: AddAndEditEmployeeInputs,
+  pagination: Pagination
 }
 
 export default new Vuex.Store({ modules: modules })

@@ -6,11 +6,14 @@ import PropChecker from '../../services/PropChecker'
 import ErrorsAlert from '../../services/ErrorsAlert'
 
 export default {
-  [names.actions.getCompanies] ({ commit }) {
+  [names.actions.getCompanies] ({ commit, rootState }) {
+    const currentPage = rootState.pagination[names.state.currentPage]
     return new Promise((resolve, reject) => {
-      axios.get(UrlMaker.getUrl(endpoints.companies)).then((response) => {
+      axios.get(UrlMaker.getUrl(endpoints.companies + '?page=' + currentPage)).then((response) => {
         if (PropChecker.hasData(response)) {
-          commit(names.mutations.setCompanies, response.data)
+          commit(names.mutations.setCompanies, response.data.companies)
+          commit(names.mutations.setAction, names.actions.getCompanies)
+          commit(names.mutations.setPagination, response.data.pagination)
         }
         resolve()
       }).catch((error) => {
