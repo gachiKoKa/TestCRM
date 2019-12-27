@@ -19,13 +19,21 @@
         <b-navbar-nav class="ml-auto">
           <!-- Using 'button-content' slot -->
           <b-button
-            v-if="isAdmin"
+            class="mr-3"
+            @click="toCompaniesTable"
+          >
+            Companies
+          </b-button>
+          <b-button
+            v-if="isAdmin()"
             class="mr-3"
             @click="toEmployeesTable"
           >
             Employees
           </b-button>
-          <b-button>Logout</b-button>
+          <b-button @click="logout()">
+            Logout
+          </b-button>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>

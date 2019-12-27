@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\constants\CommonConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\CompanyRepository;
+use App\Repositories\UserRepository;
 use App\Services\ApiResponseCreator;
 use App\Services\CompanyLogoHandler;
 use App\Services\Validation\StoreCompanyValidator;
@@ -130,5 +131,31 @@ class CompaniesController extends Controller
         $companies = $this->companyRepository->getBuilder()->select(['id', 'name'])->get()->toArray();
 
         return ApiResponseCreator::responseOk($companies);
+    }
+
+    /**
+     * @param UserRepository $userRepository
+     * @param int $companyId
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function joinUserToCompany(UserRepository $userRepository, int $companyId, int $userId): JsonResponse
+    {
+        $company = $this->companyRepository->find($companyId);
+
+        if (is_null($company)) {
+            return ApiResponseCreator::responseError('Company not found', Response::HTTP_NOT_FOUND);
+        }
+
+        $user = $userRepository->find($userId);
+
+        if (is_null($user)) {
+            return ApiResponseCreator::responseError('User not found', Response::HTTP_NOT_FOUND);
+        }
+
+        $user->company_id = $company->id;
+        $user->save();
+
+        return ApiResponseCreator::responseOk();
     }
 }

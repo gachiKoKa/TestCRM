@@ -10,7 +10,8 @@ export default {
     getAllCompanies: 'GET_ALL_COMPANIES',
     getAllUsers: 'GET_ALL_USERS',
     editEmployee: 'EDIT_EMPLOYEE',
-    deleteEmployee: 'DELETE_EMPLOYEE'
+    deleteEmployee: 'DELETE_EMPLOYEE',
+    setCompanyIdToUser: 'SET_COMPANY_ID_TO_USER'
   },
   getters: {
     getEmployeeData: 'GET_EMPLOYEE_DATA',
@@ -45,7 +46,8 @@ export default {
     setAllRoles: 'SET_ALL_ROLES',
     setEmployeeRoleId: 'SET_EMPLOYEE_ROLE_ID',
     setAllUsers: 'SET_ALL_USERS',
-    setUserValueForEdit: 'SET_USER_VALUE_FOR_EDIT'
+    setUserValueForEdit: 'SET_USER_VALUE_FOR_EDIT',
+    setCompanyIdToUser: 'SET_COMPANY_ID_TO_USER'
   },
   state: {
     email: 'EMAIL',

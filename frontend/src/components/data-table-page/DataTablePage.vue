@@ -15,6 +15,7 @@
         <th>Name</th>
         <th>Email</th>
         <th>Web Site</th>
+        <th>Status</th>
         <th>Actions</th>
       </thead>
       <tbody>
@@ -36,6 +37,9 @@
           <td>{{ company.name }}</td>
           <td>{{ company.email }}</td>
           <td>{{ company.web_site }}</td>
+          <td v-if="joinedToCompany(company.id)">
+            Joined
+          </td>
           <td v-if="isAdmin">
             <font-awesome-icon
               icon="trash"
@@ -47,6 +51,11 @@
               icon="pencil-alt"
               @click="setCompanyInfo(company)"
             />
+          </td>
+          <td v-else>
+            <b-button @click="subscribeToCompany(company.id)">
+              Subscribe
+            </b-button>
           </td>
         </tr>
       </tbody>

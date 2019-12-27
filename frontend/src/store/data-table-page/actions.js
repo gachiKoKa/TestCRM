@@ -54,5 +54,17 @@ export default {
         reject(error)
       })
     })
+  },
+  [names.actions.setCompanyIdToUser] (companyId, userId) {
+    console.log(companyId)
+    return new Promise((resolve, reject) => {
+      axios.get(UrlMaker.getUrl(endpoints.companies) + '/' + companyId + '/' + userId)
+        .then((response) => {
+          resolve()
+        }).catch((error) => {
+          ErrorsAlert.errorAlert(error.response.data)
+          resolve()
+        })
+    })
   }
 }

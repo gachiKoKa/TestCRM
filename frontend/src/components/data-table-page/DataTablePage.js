@@ -29,6 +29,13 @@ export default {
     },
     deleteCompany (companyId) {
       this.$store.dispatch(names.actions.deleteCompany, companyId)
+    },
+    subscribeToCompany (companyId) {
+      const userId = this.$store.state.globalState[names.state.user][names.state.id]
+      this.$store.dispatch(names.actions.setCompanyIdToUser, companyId, userId)
+    },
+    joinedToCompany (companyId) {
+      return this.$store.state.globalState[names.state.user][names.state.companyId] === companyId
     }
   }
 }
