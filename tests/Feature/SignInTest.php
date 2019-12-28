@@ -2,11 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Services\RolesKeeper;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
 class SignInTest extends TestCase
