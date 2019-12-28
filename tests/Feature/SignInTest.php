@@ -13,15 +13,6 @@ class SignInTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @var RolesKeeper */
-    private $rolesKeeper;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->rolesKeeper = App::make(RolesKeeper::class);
-    }
-
     public function testSignIn()
     {
         $user = factory(User::class)->create();
@@ -34,6 +25,7 @@ class SignInTest extends TestCase
         $this->assertArrayHasKey('roles', $arrayData);
         $this->assertArrayHasKey('isAdmin', $arrayData);
         $this->assertArrayHasKey('isEmployee', $arrayData);
+        $this->assertArrayHasKey('token', $arrayData);
     }
 
     public function testSignInWithInvalidEmail()
