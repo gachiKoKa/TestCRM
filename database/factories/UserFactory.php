@@ -16,12 +16,12 @@ use Faker\Generator as Faker;
 | model instances for testing / seeding your application's database.
 |
 */
-$factory->define(User::class, function (Faker $faker, RolesKeeper $keeper) {
+$factory->define(User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
-        'role_id' => $keeper->getEmployeeRole()->id,
+        'role_id' => 2,
         'company_id' => null
     ];
 });
